@@ -1,17 +1,71 @@
 import React, { useState } from "react"
 import { MdClose } from "react-icons/md"
 import TagInput from "../../Input/TagInput"
+import axios from "axios"
+import { toast } from "react-toastify"
+import { backendUrl } from "../../../lib/config"
 
-
-const AddEditNotes = ({ onClose, noteData, type }) => {
+const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
   const [title, setTitle] = useState(noteData?.title || "")
   const [content, setContent] = useState(noteData?.content || "")
   const [tags, setTags] = useState(noteData?.tags || [])
   const [error, setError] = useState(null)
 
-  const editNote = async () => {}
+  const editNote = async () => {
+    const noteId = noteData._id
+    console.log(noteId)
 
-  const addNewNote = async () => {}
+    try {
+      const res = await axios.post(
+        `${backendUrl}/api/note/edit/${noteId}`,
+        { title, content, tags },
+        { withCredentials: true }
+      )
+
+      console.log(res.data)
+
+      if (res.data.success === false) {
+        console.log(res.data.message)
+        setError(res.data.message)
+        toast.error(res.data.message)
+        return
+      }
+
+      toast.success(res.data.message)
+      getAllNotes()
+      onClose()
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error.message)
+      setError(error.message)
+    }
+  }
+
+  const addNewNote = async () => {
+    try {
+      const res = await axios.post(
+        `${backendUrl}/api/note/add`,
+        { title, content, tags },
+        { withCredentials: true }
+      )
+
+      if (res.data.success === false) {
+        console.log(res.data.message)
+        setError(res.data.message)
+        toast.error(res.data.message)
+
+        return
+      }
+
+      toast.success(res.data.message)
+      getAllNotes()
+      onClose()
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error.message)
+      setError(error.message)
+    }
+  }
 
   const handleAddNote = () => {
     if (!title) {
@@ -83,3 +137,4 @@ const AddEditNotes = ({ onClose, noteData, type }) => {
 }
 
 export default AddEditNotes
+

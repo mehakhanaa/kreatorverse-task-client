@@ -2,6 +2,9 @@ import React, { useState } from "react"
 import PasswordInput from "../../components/Input/PasswordInput"
 import { Link, useNavigate } from "react-router-dom"
 import { validateEmail } from "../../utils/helper"
+import axios from "axios"
+import { toast } from "react-toastify"
+import { backendUrl } from "../../lib/config"
 
 
 const Signup = () => {
@@ -32,9 +35,29 @@ const Signup = () => {
 
     setError("")
 
-    
+    try {
+      const res = await axios.post(
+        `${backendUrl}/api/auth/signup`,
+        { username: name, email, password },
+        { withCredentials: true }
+      )
+
+      if (res.data.success === false) {
+        setError(res.data.message)
+        toast.error(res.data.message)
+        return
+      }
+
+      toast.success(res.data.message)
+
+      setError("")
+
       navigate("/login")
-    
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error.message)
+      setError(error.message)
+    }
   }
 
   return (
@@ -63,8 +86,6 @@ const Signup = () => {
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            placeholder={"Pswd"}
-
             />
 
             {error && <p className="text-red-500 text-sm pb-1">{error}</p>}
