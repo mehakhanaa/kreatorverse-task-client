@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import SearchBar from "../SearchBar/"
+import SearchBar from "../Searchbar/"
 import ProfileInfo from "../Cards/ProfileInfo"
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
