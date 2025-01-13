@@ -39,6 +39,7 @@ const Signup = () => {
       const res = await axios.post(
         `${backendUrl}/api/auth/signup`,
         { username: name, email, password },
+        
         { withCredentials: true }
       )
 
