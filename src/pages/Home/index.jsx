@@ -35,6 +35,7 @@ const Home = () => {
       navigate("/login")
     } else {
       setUserInfo(currentUser?.rest)
+      console.log(document.cookie)
       getAllNotes()
     }
   }, [])
